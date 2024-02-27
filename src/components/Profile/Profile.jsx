@@ -1,12 +1,12 @@
-import React from "react"
+import React from "react";
 
 
-export const FriendsList = (() => {
-    return (
-        <div class="profile">
+export const Profile = (({username, tag, location, avatar, stats}) => {
+    return(
+<div class="profile">
   <div class="description">
     <img
-      src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png"
+      src={avatar}
       alt="User avatar"
       class="avatar"
     />
