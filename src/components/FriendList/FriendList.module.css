@@ -1,0 +1,46 @@
+.box {
+  margin: 40px;
+  padding: 80px;
+}
+
+.friendList {
+  border: solid 4px black;
+  display: flex;
+  padding-inline-start: 0;
+  list-style: none;
+  width: 1000px;
+}
+.item {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.item:nth-child(1) {
+  background-color: aqua;
+}
+.item:nth-child(2) {
+  background-color: teal;
+}
+.item:nth-child(3) {
+  background-color: blue;
+}
+.item:nth-child(4) {
+  background-color: blueviolet;
+}
+.item:nth-child(5) {
+  background-color: rgb(66, 66, 149);
+}
+.status {
+  font-size: 200px;
+}
+.name {
+  font-weight: 900;
+}
+.online {
+  color: green;
+}
+.offline {
+  color: red;
+}
