@@ -1,0 +1,11 @@
+.buttons {
+  display: flex;
+  align-items: center;
+  font-size: 40px;
+  gap: 40px;
+}
+.btn {
+  width: 200px;
+  height: 50px;
+  font-size: 32px;
+}

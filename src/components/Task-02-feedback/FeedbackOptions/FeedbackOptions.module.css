@@ -1,0 +1,10 @@
+.btn {
+  width: 200px;
+  height: 50px;
+  font-size: 32px;
+  gap: 40px;
+}
+.box {
+  display: flex;
+  gap: 40px;
+}
