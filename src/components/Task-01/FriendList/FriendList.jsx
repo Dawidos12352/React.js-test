@@ -1,22 +1,20 @@
-import React from "react"
 import css from "./FriendList.module.css"
 import PropTypes from "prop-types"
-
 
 export const FriendList = ({friends}) => {
     return(
         <div className={css.box}>
-        <ul className={css.friendList}>
+            <ul className={css.friendList}>
             {friends.map(el => (
                 <FriendListItem key={el.id} friends={el}/>
             ))}
-        </ul>
+            </ul>
         </div>
     )
 }
 
 const FriendListItem = ({friends}) => {
-    const {avatar, name,  isOnline} = friends
+    const {avatar, name, isOnline} = friends
     return(
         <li className={css.item}>
             <span className={`${css.status} ${isOnline ? css.online : css.offline}`}>.</span>
@@ -29,10 +27,10 @@ const FriendListItem = ({friends}) => {
 FriendList.propTypes = {
     friends : PropTypes.arrayOf(
         PropTypes.shape({
-            name : PropTypes.string.isRequired,
-            avatar : PropTypes.string.isRequired,
-            isOnline : PropTypes.bool.isRequired,
-            id : PropTypes.number.isRequired,
-        })
-    )
+            avatar : PropTypes.string.isRequired,       
+            name : PropTypes.string.isRequired,        
+            isOnline : PropTypes.bool.isRequired,      
+            id : PropTypes.number.isRequired,        
+        }).isRequired
+    ).isRequired
 }
