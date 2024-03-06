@@ -1,0 +1,11 @@
+li {
+  display: flex;
+  gap: 20px;
+}
+p {
+  font-size: 28x;
+}
+.btn {
+  font-size: 20px;
+  width: 200px;
+}
