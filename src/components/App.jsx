@@ -46,70 +46,60 @@ import React, {Component} from "react";
 
 //TASK 02 FEEDBACK
 
-import { Statistics } from "./Task-02-feedback/Statistics/Statistics";
-import { Section } from "./Task-02-feedback/Section/Section";
-import { FeedbackOptions } from "./Task-02-feedback/FeedbackOptions/FeedbackOptions";
-import { Notification } from "./Task-02-feedback/Notification/Notification";
-
+import {Statistics} from "./Task-02-feedback/Statistics/Statistics"
+import {FeedbackOptions} from "./Task-02-feedback/FeedbackOptions/FeedbackOptions"
+import {Section} from "./Task-02-feedback/Section/Section"
+import {Notification} from "./Task-02-feedback/Notification/Notification"
 export class App extends Component {
+
   state = {
     good: 0,
     neutral: 0,
-    bad: 0,
-  };
+    bad: 0
+  }
 
   countTotalFeedback() {
-    const { good, neutral, bad } = this.state;
-
-    return good + neutral + bad;
+    const { good, neutral, bad} = this.state
+    return good + bad + neutral
   }
 
   countPositiveFeedbackPercentage() {
-    const totalCount = this.countTotalFeedback();
-
-    return Math.round((this.state.good * 100) / totalCount);
+    const totalCount = this.countTotalFeedback()
+    return Math.round(( this.state.good * 100) / totalCount)
   }
 
   handleFeedback(type) {
-    this.setState((prevState) => ({ [type]: prevState[type] + 1 }));
+    this.setState((prevState) => ({ [type] : prevState[type] + 1 }))
   }
 
-  render() {
-    const {
-      handleFeedback,
-      state,
-      countTotalFeedback,
-      countPositiveFeedbackPercentage,
-    } = this;
-    const { good, neutral, bad } = state;
 
-    const totalStatistic = countTotalFeedback.call(this);
-    const positivePercentage = countPositiveFeedbackPercentage.call(this);
+  render(){
 
-    return (
+   const { good, neutral, bad} = this.state
+
+   const totalFeedback = this.countTotalFeedback.call(this)
+   const positivePercentage = this.countPositiveFeedbackPercentage.call(this)
+   const handleFeedback = this.handleFeedback.bind(this)
+
+
+    return(
       <>
-        <Section title="Please leave feedback">
-          <FeedbackOptions
-            options={["good", "neutral", "bad"]}
-            handleFeedback={handleFeedback.bind(this)} 
-          />
-        </Section>
+      <Section title="Please leave feedback">
+        <FeedbackOptions options={["good", "neutral", "bad"]} onLeaveFeedback={handleFeedback} />
+      </Section>
 
-        <Section title="Statistics">
-          {totalStatistic ? (
-            <Statistics
-              good={good}
-              neutral={neutral}
-              bad={bad}
-              total={totalStatistic}
-              positivePercentage={positivePercentage}
-            />
-          ) : (
-            <Notification message="There is no feedback" />
-          )}
-        </Section>
+      <Section title="Statistics">
+        {totalFeedback ? (
+          <Statistics good={good} neutral={neutral} bad={bad} total={totalFeedback} positivePercentage={positivePercentage} />
+        ) : (
+          <Notification message="There is no feedback" />
+        )}
+        
+      </Section>
+      
+
       </>
-    );
+    )
   }
 }
 
