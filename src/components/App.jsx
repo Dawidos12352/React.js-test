@@ -111,49 +111,67 @@ import {ContactForm} from "./Task-02-phonebook/ContactForm/ContactForm"
 import {ContactList} from "./Task-02-phonebook/ContactList/ContactList"
 import {Filter} from "./Task-02-phonebook/Filter/Filter"
 
+const LOCAL_STORAGE_KEY = "contacts"
+
 export class App extends Component {
 
-  state = {
-    contacts: [
-      {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
-      {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
-      {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-      {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
-    ],
-    filter: "",
-  }
 
+    state = {
+        contacts: [],
+        filter : '',
+      }
 
-  addContact = (newContact) => {
-    this.setState((prevState) => ({
-      contacts: [...prevState.contacts, newContact]
-    }))
-  }
+  
 
-  handleFilter = (e) => {
-    this.setState({filter : e.target.value})
-  }
+    addContact = (newContact) => {
+        this.setState((prevState) => ({
+            contacts : [...prevState.contacts, newContact]
+        }))
+    }
 
-  handleDelete = (id) => {
-    const filteredContacts = this.state.contacts.filter((el) =>
-    el.id !== id)
+    filterHandler = (e) => {
+        this.setState({filter : e.target.value})
+    }
 
-    this.setState({contacts : filteredContacts})
-  }
+    deleteHandler = (id) => {
+        const filteredContacts = this.state.contacts.filter((e)=> 
+            e.id !== id)
 
-  render(){
-    const {contacts, filter} = this.state
+        this.setState({contacts : filteredContacts})
+    }
 
-    return(
-      <div className={css.box}>
-        <h1 className={css.title}>Phonebook</h1>
-        <ContactForm contacts={contacts}  handleAddContact={this.addContact}/>
+    componentDidMount(){
+        console.log(`local storage loading...`)
+        const storedContacts = localStorage.getItem(LOCAL_STORAGE_KEY)
+        this.setState({
+            contacts : JSON.parse(storedContacts)
+        })
+    }
+
+    componentDidUpdate(){
+        console.log('local stroage update')
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state.contacts))
         
-        <h1 className={css.title}>Contacts</h1>
-        <Filter handleFilter={this.handleFilter} filterText={filter}/>
-        <ContactList contacts={contacts} filterText={filter} handleDelete={this.handleDelete}/>
-      </div>
-    )
-  }
-}
+    }
 
+
+    render(){
+
+        const {filter, contacts} = this.state
+
+        return(
+
+            <div className={css.box}>
+                <h1 className={css.title}>Phonebook</h1>
+                <ContactForm contacts={contacts} handleAddContact={this.addContact}/>
+                
+
+                <h1 className={css.title}>Contacts</h1>
+                <Filter filterText={filter} filterHandler={this.filterHandler}/>
+                <ContactList contacts={contacts} filterText={filter} deleteHandler={this.deleteHandler}/>
+               
+                
+            </div>
+        )
+    }
+}
