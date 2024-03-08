@@ -176,3 +176,16 @@ import css from "./App.module.css"
 
 //TASK  03 IMAGE FINDER
 
+export class App extends Component{
+
+
+  render(){
+
+
+    return(
+      <>
+      
+      </>
+    )
+  }
+}
