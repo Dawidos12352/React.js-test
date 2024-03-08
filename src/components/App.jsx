@@ -105,73 +105,74 @@ import css from "./App.module.css"
 
 
 
-//TASK 02 PHONEBOOK
+//TASK 02 - 03 PHONEBOOK
 
-import {ContactForm} from "./Task-02-phonebook/ContactForm/ContactForm"
-import {ContactList} from "./Task-02-phonebook/ContactList/ContactList"
-import {Filter} from "./Task-02-phonebook/Filter/Filter"
+// import {ContactForm} from "./Task-02-phonebook/ContactForm/ContactForm"
+// import {Filter} from "./Task-02-phonebook/Filter/Filter"
+// import {ContactList} from "./Task-02-phonebook/ContactList/ContactList"
 
-const LOCAL_STORAGE_KEY = "contacts"
-
-export class App extends Component {
+// const LOCAL_STORAGE_KEY = "contacts"
 
 
-    state = {
-        contacts: [],
-        filter : '',
-      }
+// export class App extends Component {
 
-  
+//     state = {
+//         contacts: [],
+//         filter: '',
+//       }
 
-    addContact = (newContact) => {
-        this.setState((prevState) => ({
-            contacts : [...prevState.contacts, newContact]
-        }))
-    }
+//       addContact = (newContact) => {
+//         this.setState((prevState) => ({
+//            contacts: [...prevState.contacts, newContact]
+//         }))
+//       }
 
-    filterHandler = (e) => {
-        this.setState({filter : e.target.value})
-    }
+//       filterHandler = (e) => {
+//         this.setState({filter: e.target.value})
+//         console.log("Filter value :" , e.target.value)
+//       }
 
-    deleteHandler = (id) => {
-        const filteredContacts = this.state.contacts.filter((e)=> 
-            e.id !== id)
-
-        this.setState({contacts : filteredContacts})
-    }
-
-    componentDidMount(){
-        console.log(`local storage loading...`)
-        const storedContacts = localStorage.getItem(LOCAL_STORAGE_KEY)
-        this.setState({
-            contacts : JSON.parse(storedContacts)
-        })
-    }
-
-    componentDidUpdate(){
-        console.log('local stroage update')
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state.contacts))
-        
-    }
+//       deleteHandler = (id) => {
+//         const filteredContacts = this.state.contacts.filter((e) => 
+//         e.id !== id)
+//         this.setState({contacts : filteredContacts})
+//       }
 
 
-    render(){
 
-        const {filter, contacts} = this.state
+//       componentDidMount(){
+//         console.log("sprawdzam renderowanie nowych elementow")
+//         const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY)
+//         this.setState({contacts : JSON.parse(storedItems)})
+//       }
 
-        return(
+//       componentDidUpdate(){
+//         console.log("Tutaj robie update")
+//         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state.contacts))
+//       }
 
-            <div className={css.box}>
-                <h1 className={css.title}>Phonebook</h1>
-                <ContactForm contacts={contacts} handleAddContact={this.addContact}/>
+
+
+   
+//     render(){
+
+//         const {contacts, filter} = this.state
+
+       
+
+//         return(
+//             <div className={css.box}>
+//                 <h1 className={css.title}>Phonebook</h1>
+//                 <ContactForm contacts={contacts} addContactHandler={this.addContact}/>
                 
+//                 <h1 className={css.title}>Contacts</h1>
+//                 <Filter filterHandler={this.filterHandler} filterText={filter}/>
+//                 <ContactList filterText={filter} contacts={contacts} deleteHandler={this.deleteHandler}/>
+//             </div>
 
-                <h1 className={css.title}>Contacts</h1>
-                <Filter filterText={filter} filterHandler={this.filterHandler}/>
-                <ContactList contacts={contacts} filterText={filter} deleteHandler={this.deleteHandler}/>
-               
-                
-            </div>
-        )
-    }
-}
+//         )
+//     }
+// }
+
+//TASK  03 IMAGE FINDER
+
