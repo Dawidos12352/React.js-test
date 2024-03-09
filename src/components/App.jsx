@@ -176,14 +176,71 @@ import React, {Component} from "react";
 
 //TASK  03 IMAGE FINDER
 
+
+import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
+import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
+
+
+const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
+const PER_PAGE = 12;
+
 export class App extends Component{
+
+  state = {
+    images : [],
+    inputSearch: "",
+    page : 1,
+
+    
+}
+
+async componentDidMount(){
+ await this.fetchImages()
+}
+
+fetchImages = async () => {
+
+  const {inputSearch} = this.state
+
+  try{
+
+    const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}&page=1`)
+    if(!response.ok){
+      throw new Error('Network response is failed');
+    }
+    const data = await response.json()
+    
+    this.setState((prevState) => ({...prevState, images:  data.hits}))
+
+  } catch(error) {
+    console.log(error)
+    return error
+  }
+}
+
+changeHandler = (e) => {
+  const {name, value} = e.target
+  this.setState({[name] : value})
+  // console.log(`Wartosc inputa o nazwie ${name} to : ${value}`)
+}
+
+submitHandler = (e) => {
+    e.preventDefault();
+    this.fetchImages();
+}
 
 
   render(){
 
-
+    const {inputSearch, images} = this.state
     return(
       <>
+      <Searchbar 
+      inputSearch={inputSearch} 
+      changeHandler={this.changeHandler}
+      submitHandler={this.submitHandler}
+      />
+      <ImageGallery images={images}/>
 
       </>
     )
