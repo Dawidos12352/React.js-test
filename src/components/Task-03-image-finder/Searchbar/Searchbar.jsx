@@ -13,14 +13,14 @@ export class Searchbar extends Component{
         const {inputSearch, changeHandler, submitHandler} = this.props
 
         return(
-            <header className={css.searchbar}>
-                <form className={css.form} onSubmit={submitHandler}>
-                    <button type="submit" className={css.button}>
-                    <span className={css.buttonLabel}>Search</span>
-                    </button>
+            <header className={css.Searchbar}>
+            <form className={css.SearchForm} onSubmit={submitHandler}>
+              <button type="submit" className={css.SearchFormButton}>
+              🔍
+              </button>
 
                     <input
-                    className={css.input}
+                    className={css.SearchFormInput}
                     name="inputSearch"
                     type="text"
                     autoComplete="off"

@@ -179,10 +179,10 @@ import React, {Component} from "react";
 
 import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
 import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
+import {Button} from "./Task-03-image-finder/Button/Button"
 
 
 const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
-const PER_PAGE = 12;
 
 export class App extends Component{
 
@@ -190,32 +190,78 @@ export class App extends Component{
     images : [],
     inputSearch: "",
     page : 1,
-
+    per_page : 12,
+    totalHits: 0,
+    isActiveButton : true,
+    isLoadMoreButton : false,
     
 }
 
+
 async componentDidMount(){
+  console.log("Robie component did mount")
  await this.fetchImages()
+}
+
+async componentDidUpdate(prevProps, prevState){
+  const {inputSearch, isActiveButton, images, totalHits, per_page} = this.state
+
+  console.log("Robie component did update")
+
+
+  if(inputSearch.length !== 0  && totalHits > per_page){
+   
+      this.setState({isLoadMoreButton : true})
+    
+  }else {
+    this.setState({isLoadMoreButton : false})
+  }
+
+  if(!isActiveButton){
+    if(inputSearch !== prevState.inputSearch && inputSearch.length > 0) {
+      await this.fetchImages();
+    }
+    if(inputSearch.length === 0 && images.length > 0) {
+      this.setState({images : []})
+    }
+  }
+
+  if(prevState.per_page !== this.state.per_page) {
+    console.log('aktualizuj mi dane i pobieraj fetcha')
+    this.fetchImages()
+  }
+
 }
 
 fetchImages = async () => {
 
-  const {inputSearch} = this.state
-
+  const {inputSearch, per_page, page} = this.state
+  this.setState({isActiveButton : true})
+  console.log("LIMIT W FETCHU", this.state.per_page)
   try{
 
-    const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}&page=1`)
+    const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${per_page}&page=${page}`)
     if(!response.ok){
       throw new Error('Network response is failed');
     }
     const data = await response.json()
     
     this.setState((prevState) => ({...prevState, images:  data.hits}))
-
+    this.setState({totalHits:  data.totalHits})
+    console.log("ROBIE FETCHA" )
+   
   } catch(error) {
     console.log(error)
     return error
+  } finally {
+    this.setState({isActiveButton : false})
   }
+
+}
+
+loadMoreImages = () => {
+  console.log("ZZWIEKSZ LIMIT", this.state.per_page)
+ this.setState(prevState => ({per_page: prevState.per_page + 12 }))
 }
 
 changeHandler = (e) => {
@@ -232,7 +278,7 @@ submitHandler = (e) => {
 
   render(){
 
-    const {inputSearch, images} = this.state
+    const {inputSearch, images, isLoadMoreButton, page} = this.state
     return(
       <>
       <Searchbar 
@@ -241,7 +287,10 @@ submitHandler = (e) => {
       submitHandler={this.submitHandler}
       />
       <ImageGallery images={images}/>
-
+      {isLoadMoreButton && (
+        <Button loadMore={this.loadMoreImages} page={page}/> 
+      )}
+    
       </>
     )
   }
