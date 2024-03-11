@@ -1,5 +1,6 @@
 import css from "./ImageGalleryItem.module.css"
 
+
 export const ImageGalleryItem = ({el}) => {
 
     const { id, webformatURL, tags} = el
@@ -10,3 +11,4 @@ export const ImageGalleryItem = ({el}) => {
         </li>
     )
 } 
+

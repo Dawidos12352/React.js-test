@@ -180,6 +180,9 @@ import React, {Component} from "react";
 import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
 import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
 import {Button} from "./Task-03-image-finder/Button/Button"
+import {Loader} from "./Task-03-image-finder/Loader/Loader"
+import {Modal} from "./Task-03-image-finder/Modal/Modal"
+
 
 
 const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
@@ -194,7 +197,9 @@ export class App extends Component{
     totalHits: 0,
     isActiveButton : true,
     isLoadMoreButton : false,
-    
+    isLoading : false,
+    isModalOpen : false,
+    currentImage: {},
 }
 
 
@@ -237,6 +242,7 @@ fetchImages = async () => {
 
   const {inputSearch, per_page, page} = this.state
   this.setState({isActiveButton : true})
+  this.setState({isLoading : true})
   console.log("LIMIT W FETCHU", this.state.per_page)
   try{
 
@@ -248,26 +254,25 @@ fetchImages = async () => {
     
     this.setState((prevState) => ({...prevState, images:  data.hits}))
     this.setState({totalHits:  data.totalHits})
-    console.log("ROBIE FETCHA" )
    
   } catch(error) {
     console.log(error)
+
     return error
   } finally {
     this.setState({isActiveButton : false})
+    this.setState({isLoading : false})
   }
 
 }
 
 loadMoreImages = () => {
-  console.log("ZZWIEKSZ LIMIT", this.state.per_page)
  this.setState(prevState => ({per_page: prevState.per_page + 12 }))
 }
 
 changeHandler = (e) => {
   const {name, value} = e.target
   this.setState({[name] : value})
-  // console.log(`Wartosc inputa o nazwie ${name} to : ${value}`)
 }
 
 submitHandler = (e) => {
@@ -275,10 +280,27 @@ submitHandler = (e) => {
     this.fetchImages();
 }
 
+handleOpenModal = (imageId) => {
+  const {images} = this.state
+  const currentImage = images.find(({id}) => id === imageId)
+
+  console.log(currentImage, "currentImage: {},")
+  this.setState({ currentImage, isModalOpen: true });
+
+  window.addEventListener("keydown", ((e) => {
+    if(e.key === "Escape") {
+      this.handleCloseModal()
+    }
+  })) 
+}
+handleCloseModal = () => {
+  this.setState({ currentImage: {}, isModalOpened: false });
+}
 
   render(){
 
-    const {inputSearch, images, isLoadMoreButton, page} = this.state
+    const {inputSearch, images, isLoadMoreButton, page, isLoading, isModalOpen, currentImage} = this.state
+    const { largeImageURL, tags } = currentImage;
     return(
       <>
       <Searchbar 
@@ -286,11 +308,19 @@ submitHandler = (e) => {
       changeHandler={this.changeHandler}
       submitHandler={this.submitHandler}
       />
+      {isLoading && (
+        <Loader />
+      )}
       <ImageGallery images={images}/>
       {isLoadMoreButton && (
         <Button loadMore={this.loadMoreImages} page={page}/> 
       )}
-    
+      {isModalOpen && (
+        <Modal             
+        largeImageURL={largeImageURL}
+        tags={tags}
+        handleCLoseModal={this.handleCLoseModal}/>
+      )}
       </>
     )
   }
