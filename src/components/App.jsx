@@ -1,5 +1,6 @@
-import React, {Component} from "react";
-// import css from "./App.module.css"
+import React, {Component, useState} from "react";
+
+import css from "./App.module.css"
 
 //TASK 01
 
@@ -14,34 +15,29 @@ import React, {Component} from "react";
 // import transactions from "./Task-01/TransactionHistory/transaction.json"
 
 
-//  {/* TASK 01 */}
+//  TASK 01 
+
 // export const App = () => {
-//   return (
-//     <div
-//     style={{
-//       height: '100vh',
-//       display: 'flex',
-//       alignItems: 'center',
-//       fontSize: 40,
-//       color: '#010101',
-//       flexDirection: 'column',
-//     }}
-//     >
-//       <div>
-//       <Profile
-//         username={user.username}
-//         tag={user.tag}
-//         location={user.location}
-//         avatar={user.avatar}
-//         stats={user.stats}
+
+// const {username, location, avatar, stats, tag} = user
+
+//   return(
+//     <div>
+//       <Profile   
+//         username={username}
+//         tag={tag}
+//         location={location}
+//         avatar={avatar}
+//         stats={stats}
 //       />
-//       <Statistics title="Upload stats" stats={data}/>\
-//       <FriendList friends={friends} />
-//       <TransactionHistory items={transactions} />
-//       </div>     
+//       <Statistics title="Upload stats" stats={data} />
+//       <FriendList friends={friends} />;
+//       <TransactionHistory items={transactions} />;
 //     </div>
-//   );
-// };
+    
+//   )
+// }
+
 
 
 //TASK 02 FEEDBACK
@@ -50,7 +46,9 @@ import React, {Component} from "react";
 // import {FeedbackOptions} from "./Task-02-feedback/FeedbackOptions/FeedbackOptions"
 // import {Section} from "./Task-02-feedback/Section/Section"
 // import {Notification} from "./Task-02-feedback/Notification/Notification"
-// export class App extends Component {
+
+
+// export class App extends Component{
 
 //   state = {
 //     good: 0,
@@ -58,47 +56,41 @@ import React, {Component} from "react";
 //     bad: 0
 //   }
 
-//   countTotalFeedback() {
-//     const { good, neutral, bad} = this.state
-//     return good + bad + neutral
+//   handleClick = (type) => {
+//     this.setState((prevState) => ({ [type] : prevState[type] + 1}))
+  
 //   }
 
-//   countPositiveFeedbackPercentage() {
-//     const totalCount = this.countTotalFeedback()
-//     return Math.round(( this.state.good * 100) / totalCount)
+//   countTotalFeedback = () => {
+//     const {good, neutral, bad} = this.state
+//     return good + neutral + bad
 //   }
 
-//   handleFeedback(type) {
-//     this.setState((prevState) => ({ [type] : prevState[type] + 1 }))
+//   countPositiveFeedbackPercentage = () => {
+//     const totalCount = this.countTotalFeedback();
+//     return Math.round((this.state.good * 100) / totalCount)
 //   }
-
 
 //   render(){
-
-//    const { good, neutral, bad} = this.state
-
-//    const totalFeedback = this.countTotalFeedback.call(this)
-//    const positivePercentage = this.countPositiveFeedbackPercentage.call(this)
-//    const handleFeedback = this.handleFeedback.bind(this)
-
+    
+//     const {good, neutral, bad} = this.state
 
 //     return(
-//       <>
-//       <Section title="Please leave feedback">
-//         <FeedbackOptions options={["good", "neutral", "bad"]} onLeaveFeedback={handleFeedback} />
-//       </Section>
+//       <div className={css.box}>
+//         <Section title="Please leave feedback">
+//         <FeedbackOptions options={["good", "neutral" , "bad"]} onLeaveFeedback={this.handleClick} />
+//         </Section> 
 
-//       <Section title="Statistics">
-//         {totalFeedback ? (
-//           <Statistics good={good} neutral={neutral} bad={bad} total={totalFeedback} positivePercentage={positivePercentage} />
-//         ) : (
-//           <Notification message="There is no feedback" />
-//         )}
-        
-//       </Section>
+//         <Section title="Statistics">
+//           {this.countTotalFeedback() ? (
+//             <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback()} positivePercentage={this.countPositiveFeedbackPercentage()} />
+//           ) : (
+//             <Notification message="There is no feedback"/>
+//           )}
+//         </Section> 
+//       </div>
+
       
-
-//       </>
 //     )
 //   }
 // }
@@ -177,151 +169,200 @@ import React, {Component} from "react";
 //TASK  03 IMAGE FINDER
 
 
-import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
-import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
-import {Button} from "./Task-03-image-finder/Button/Button"
-import {Loader} from "./Task-03-image-finder/Loader/Loader"
-import {Modal} from "./Task-03-image-finder/Modal/Modal"
+// import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
+// import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
+// import {Button} from "./Task-03-image-finder/Button/Button"
+// import {Loader} from "./Task-03-image-finder/Loader/Loader"
+// import {Modal} from "./Task-03-image-finder/Modal/Modal"
 
 
 
-const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
+// const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
 
-export class App extends Component{
+// export class App extends Component{
 
-  state = {
-    images : [],
-    inputSearch: "",
-    page : 1,
-    per_page : 12,
-    totalHits: 0,
-    isActiveButton : true,
-    isLoadMoreButton : false,
-    isLoading : false,
-    isModalOpen : false,
-    currentImage: {},
-}
-
-
-async componentDidMount(){
-  console.log("Robie component did mount")
- await this.fetchImages()
-}
-
-async componentDidUpdate(prevProps, prevState){
-  const {inputSearch, isActiveButton, images, totalHits, per_page} = this.state
-
-  console.log("Robie component did update")
+//   state = {
+//     images : [],
+//     inputSearch: "",
+//     page : 1,
+//     per_page : 12,
+//     totalHits: 0,
+//     isActiveButton : true,
+//     isLoadMoreButton : false,
+//     isLoading : false,
+//     isModalOpen : false,
+//     currentImage: {},
+// }
 
 
-  if(inputSearch.length !== 0  && totalHits > per_page){
+// async componentDidMount(){
+//   console.log("Robie component did mount")
+//  await this.fetchImages()
+// }
+
+// async componentDidUpdate(prevProps, prevState){
+//   const {inputSearch, isActiveButton, images, totalHits, per_page} = this.state
+
+//   console.log("Robie component did update")
+
+
+//   if(inputSearch.length !== 0  && totalHits > per_page){
    
-      this.setState({isLoadMoreButton : true})
+//       this.setState({isLoadMoreButton : true})
     
-  }else {
-    this.setState({isLoadMoreButton : false})
-  }
+//   }else {
+//     this.setState({isLoadMoreButton : false})
+//   }
 
-  if(!isActiveButton){
-    if(inputSearch !== prevState.inputSearch && inputSearch.length > 0) {
-      await this.fetchImages();
-    }
-    if(inputSearch.length === 0 && images.length > 0) {
-      this.setState({images : []})
-    }
-  }
+//   if(!isActiveButton){
+//     if(inputSearch !== prevState.inputSearch && inputSearch.length > 0) {
+//       await this.fetchImages();
+//     }
+//     if(inputSearch.length === 0 && images.length > 0) {
+//       this.setState({images : []})
+//     }
+//   }
 
-  if(prevState.per_page !== this.state.per_page) {
-    console.log('aktualizuj mi dane i pobieraj fetcha')
-    this.fetchImages()
-  }
+//   if(prevState.per_page !== this.state.per_page) {
+//     console.log('aktualizuj mi dane i pobieraj fetcha')
+//     this.fetchImages()
+//   }
 
-}
+// }
 
-fetchImages = async () => {
+// fetchImages = async () => {
 
-  const {inputSearch, per_page, page} = this.state
-  this.setState({isActiveButton : true})
-  this.setState({isLoading : true})
-  console.log("LIMIT W FETCHU", this.state.per_page)
-  try{
+//   const {inputSearch, per_page, page} = this.state
+//   this.setState({isActiveButton : true})
+//   this.setState({isLoading : true})
+//   console.log("LIMIT W FETCHU", this.state.per_page)
+//   try{
 
-    const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${per_page}&page=${page}`)
-    if(!response.ok){
-      throw new Error('Network response is failed');
-    }
-    const data = await response.json()
+//     const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${per_page}&page=${page}`)
+//     if(!response.ok){
+//       throw new Error('Network response is failed');
+//     }
+//     const data = await response.json()
     
-    this.setState((prevState) => ({...prevState, images:  data.hits}))
-    this.setState({totalHits:  data.totalHits})
+//     this.setState((prevState) => ({...prevState, images:  data.hits}))
+//     this.setState({totalHits:  data.totalHits})
    
-  } catch(error) {
-    console.log(error)
+//   } catch(error) {
+//     console.log(error)
 
-    return error
-  } finally {
-    this.setState({isActiveButton : false})
-    this.setState({isLoading : false})
+//     return error
+//   } finally {
+//     this.setState({isActiveButton : false})
+//     this.setState({isLoading : false})
+//   }
+
+// }
+
+// loadMoreImages = () => {
+//  this.setState(prevState => ({per_page: prevState.per_page + 12 }))
+// }
+
+// changeHandler = (e) => {
+//   const {name, value} = e.target
+//   this.setState({[name] : value})
+// }
+
+// submitHandler = (e) => {
+//     e.preventDefault();
+//     this.fetchImages();
+// }
+
+// handleOpenModal = (imageId) => {
+//   const {images} = this.state
+//   const currentImage = images.find(({id}) => id === imageId)
+
+//   console.log(currentImage, "currentImage: {},")
+//   this.setState({ currentImage, isModalOpen: true });
+
+//   window.addEventListener("keydown", ((e) => {
+//     if(e.key === "Escape") {
+//       this.handleCloseModal()
+//     }
+//   })) 
+// }
+// handleCloseModal = () => {
+//   this.setState({ currentImage: {}, isModalOpened: false });
+// }
+
+//   render(){
+
+//     const {inputSearch, images, isLoadMoreButton, page, isLoading, isModalOpen, currentImage} = this.state
+//     const { largeImageURL, tags } = currentImage;
+//     return(
+//       <>
+//       <Searchbar 
+//       inputSearch={inputSearch} 
+//       changeHandler={this.changeHandler}
+//       submitHandler={this.submitHandler}
+//       />
+//       {isLoading && (
+//         <Loader />
+//       )}
+//       <ImageGallery images={images}/>
+//       {isLoadMoreButton && (
+//         <Button loadMore={this.loadMoreImages} page={page}/> 
+//       )}
+//       {isModalOpen && (
+//         <Modal             
+//         largeImageURL={largeImageURL}
+//         tags={tags}
+//         handleCLoseModal={this.handleCLoseModal}/>
+//       )}
+//       </>
+//     )
+//   }
+// }
+
+//  TASK 04 FEEDBACK
+
+import {FeedbackOptions} from "./Task-04/Feedback/FeedbackOptions/FeedbackOptions"
+import {Statistics} from "./Task-04/Feedback/Statistics/Statistics"
+import {Section} from "./Task-04/Feedback/Section/Section"
+import {Notification} from "./Task-04/Feedback/Notification/Notification"
+
+
+export const App = () => {
+
+
+  const [state, setState] = useState({ good: 0, neutral: 0, bad: 0 })
+
+  const handleClick = (type) => {
+    setState((prevState) => ({ ...prevState, [type] : prevState[type] + 1}))
   }
 
-}
+  const countTotalFeedback = () => {
+    const { good, neutral, bad } = state
+    return good + neutral + bad
+  }
 
-loadMoreImages = () => {
- this.setState(prevState => ({per_page: prevState.per_page + 12 }))
-}
+  const countPositiveFeedbackPercentage = () => {
+    const totalCount = countTotalFeedback();
+    return totalCount > 0 ? Math.round((state.good /totalCount) * 100) : 0
+  }
 
-changeHandler = (e) => {
-  const {name, value} = e.target
-  this.setState({[name] : value})
-}
+    
+    const {good, neutral, bad} = state
 
-submitHandler = (e) => {
-    e.preventDefault();
-    this.fetchImages();
-}
-
-handleOpenModal = (imageId) => {
-  const {images} = this.state
-  const currentImage = images.find(({id}) => id === imageId)
-
-  console.log(currentImage, "currentImage: {},")
-  this.setState({ currentImage, isModalOpen: true });
-
-  window.addEventListener("keydown", ((e) => {
-    if(e.key === "Escape") {
-      this.handleCloseModal()
-    }
-  })) 
-}
-handleCloseModal = () => {
-  this.setState({ currentImage: {}, isModalOpened: false });
-}
-
-  render(){
-
-    const {inputSearch, images, isLoadMoreButton, page, isLoading, isModalOpen, currentImage} = this.state
-    const { largeImageURL, tags } = currentImage;
     return(
-      <>
-      <Searchbar 
-      inputSearch={inputSearch} 
-      changeHandler={this.changeHandler}
-      submitHandler={this.submitHandler}
-      />
-      {isLoading && (
-        <Loader />
-      )}
-      <ImageGallery images={images}/>
-      {isLoadMoreButton && (
-        <Button loadMore={this.loadMoreImages} page={page}/> 
-      )}
-      {isModalOpen && (
-        <Modal             
-        largeImageURL={largeImageURL}
-        tags={tags}
-        handleCLoseModal={this.handleCLoseModal}/>
-      )}
-      </>
+      <div className={css.box}>
+        <Section title="Please leave feedback">
+        <FeedbackOptions options={["good", "neutral" , "bad"]} onLeaveFeedback={handleClick} />
+        </Section> 
+
+        <Section title="Statistics">
+          {countTotalFeedback() ? (
+            <Statistics good={good} neutral={neutral} bad={bad} total={countTotalFeedback()} positivePercentage={countPositiveFeedbackPercentage()} />
+           ) : (
+              <Notification message="There is no feedback"/>
+            )}
+         </Section> 
+      </div>
+
+      
     )
   }
-}

@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 
 
 export const TransactionHistory = ({items}) => {
+
     return(
         <table className={css.transactionHistory}>
   <thead>
@@ -14,32 +15,23 @@ export const TransactionHistory = ({items}) => {
   </thead>
 
   <tbody>
-    {items.map(el => (
-        <TransactionHistoryItem items={el} key={el.id}/>
-    ))}
+    {items.map((el) => (
+ <TransactionHistoryItem item={el} key={el.id}/>
+      ))}
   </tbody>
 </table>
     )
 }
 
-const TransactionHistoryItem = ({items}) => {
-    const {type, amount, currency} = items
-    return(
-        <tr>
-        <td>{type}</td>
-        <td>{amount}</td>
-        <td>{currency}</td>
-      </tr>
-    )
-}
+export const TransactionHistoryItem = ({item}) => {
 
-TransactionHistory.propTypes = {
-    items : PropTypes.arrayOf(
-        PropTypes.shape({
-            id : PropTypes.string.isRequired,
-            type : PropTypes.string.isRequired,
-            amount : PropTypes.string.isRequired,
-            currency : PropTypes.string.isRequired,
-        }).isRequired,
-    ).isRequired,
+    const { type, amount, currency} = item
+
+    return(
+        <tr >
+            <td>{type}</td>
+            <td>{amount}</td>
+            <td>{currency}</td>
+        </tr>
+    )
 }

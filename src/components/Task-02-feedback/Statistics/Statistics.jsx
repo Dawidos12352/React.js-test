@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 import css from "./Statistics.module.css"
 
 
-export const Statistics = ({good, neutral, bad, total, positivePercentage}) => {
+export const Statistics = ({good, neutral, bad, total , positivePercentage}) => {
 
     return(
         <div className={css.box}>
@@ -10,7 +10,8 @@ export const Statistics = ({good, neutral, bad, total, positivePercentage}) => {
             <p>Neutral : {neutral}</p>
             <p>Bad : {bad}</p>
             <p>Total : {total}</p>
-            <p>Positive percentage : {positivePercentage} %</p>
+            <p>Positive feedback : {positivePercentage}%</p>
+  
         </div>
     )
 }
