@@ -1,53 +1,50 @@
-import React, {Component} from "react";
+import React, { useState} from "react";
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import css from "./ContactForm.module.css"
 
-const INITIAL_STATE = {
+const state = {
     name: '',
     number: '',
 }
 
-export class ContactForm extends Component {
+export const ContactForm = ({contacts, addContact}) => {
 
-    state = {
-        name: '',
-        number: '',
-    }
 
-    submitHandle = (e) => {
+    const [contact, setContact] = useState(state)
+    
+
+
+    const submitHandle = (e) => {
         e.preventDefault();
     
-    const {name, number} = this.state
+    const {name, number} = contact
         const newContact = {
           name : name,
           number : number,
           id : nanoid(),
         }
 
-        for(const {name} of this.props.contacts){
-            if( name === this.state.name){
+        for(const {name} of contacts){
+            if( name === contact.name){
                 return alert(`${name} is already in contacts`)
             }
         }
     
-        this.props.addContact(newContact)
-        this.setState({...INITIAL_STATE})
+       addContact(newContact)
+        setContact({name: "", number: ""})
       }
     
-      changeHandle = (e) => {
+      const changeHandle = (e) => {
         const {name, value} = e.target
-        this.setState({[name] : value})
+        setContact({ ...contact,
+          [name] : value
+        })
       }
-
-    
-    render(){
-
-        const { name, number } = this.state
 
         return(
 
-            <form onSubmit={this.submitHandle} className={css.form}>
+            <form onSubmit={submitHandle} className={css.form}>
             <label>
               Name
               <input
@@ -56,8 +53,8 @@ export class ContactForm extends Component {
                 pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                 title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                 required
-                value={name}
-                onChange={this.changeHandle}
+                value={contact.name}
+                onChange={changeHandle}
               />
             </label>
             <label>
@@ -68,8 +65,8 @@ export class ContactForm extends Component {
                 pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                 title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                 required
-                value={number}
-                onChange={this.changeHandle}
+                value={contact.number}
+                onChange={changeHandle}
               />
             </label>
             <button type="submit">Add contact</button>
@@ -77,7 +74,7 @@ export class ContactForm extends Component {
 
         )
     }
-}
+
 
 ContactForm.propTypes = {
     addContact : PropTypes.func.isRequired,

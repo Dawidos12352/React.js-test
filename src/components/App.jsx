@@ -1,4 +1,4 @@
-import React, {Component, useState} from "react";
+import React, { useEffect, useState} from "react";
 
 import css from "./App.module.css"
 
@@ -103,68 +103,58 @@ import css from "./App.module.css"
 // import {Filter} from "./Task-02-phonebook/Filter/Filter"
 // import {ContactList} from "./Task-02-phonebook/ContactList/ContactList"
 
-// const LOCAL_STORAGE_KEY = "contacts"
-
-
+// const STORAGE_KEY = "contacts"
 // export class App extends Component {
 
-//     state = {
-//         contacts: [],
-//         filter: '',
-//       }
+//   state = {
+//     contacts: [],
+//     filter: '',
+    
+//   }
 
-//       addContact = (newContact) => {
-//         this.setState((prevState) => ({
-//            contacts: [...prevState.contacts, newContact]
-//         }))
-//       }
+//   componentDidMount(){
+//     console.log("Pobieram dane na start")
+//     const storage = localStorage.getItem(STORAGE_KEY)
+//     this.setState({contacts : JSON.parse(storage)})
 
-//       filterHandler = (e) => {
-//         this.setState({filter: e.target.value})
-//         console.log("Filter value :" , e.target.value)
-//       }
+//   }
+//   componentDidUpdate(){
+//     console.log("Robie update")
+//     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state.contacts))
+//   }
 
-//       deleteHandler = (id) => {
-//         const filteredContacts = this.state.contacts.filter((e) => 
-//         e.id !== id)
-//         this.setState({contacts : filteredContacts})
-//       }
-
-
-
-//       componentDidMount(){
-//         console.log("sprawdzam renderowanie nowych elementow")
-//         const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY)
-//         this.setState({contacts : JSON.parse(storedItems)})
-//       }
-
-//       componentDidUpdate(){
-//         console.log("Tutaj robie update")
-//         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state.contacts))
-//       }
+//   addContact = (newContact) => {
+//     this.setState((prevState) => ({contacts : [...prevState.contacts, newContact]}))
+//   }
+//   filterHandler = (e) => {
+//     this.setState({filter : e.target.value})
+//   }
+//   deleteContact = (id) => {
+//     const filteredContacts = this.state.contacts.filter((e) => 
+//     e.id !== id)
+//     this.setState({contacts : filteredContacts})
+//   }
 
 
+//   render(){
 
-   
-//     render(){
+//     const {contacts, filter} = this.state
 
-//         const {contacts, filter} = this.state
-
+//     return(
+//       <div className={css.box}>
+//         <h1 className={css.title}>Phonebook</h1>
+//         <ContactForm addContact={this.addContact} contacts={contacts}/>
        
+//         <h1 className={css.title}>Contacts</h1>
+//         <Filter filter={filter} filterHandler={this.filterHandler}/>
+//         <ContactList contacts={contacts} filter={filter} deleteContact={this.deleteContact}/>
+        
+//       </div>
 
-//         return(
-//             <div className={css.box}>
-//                 <h1 className={css.title}>Phonebook</h1>
-//                 <ContactForm contacts={contacts} addContactHandler={this.addContact}/>
-                
-//                 <h1 className={css.title}>Contacts</h1>
-//                 <Filter filterHandler={this.filterHandler} filterText={filter}/>
-//                 <ContactList filterText={filter} contacts={contacts} deleteHandler={this.deleteHandler}/>
-//             </div>
-
-//         )
-//     }
+//     )
+//   }
 // }
+
 
 //TASK  03 IMAGE FINDER
 
@@ -320,49 +310,104 @@ import css from "./App.module.css"
 
 //  TASK 04 FEEDBACK
 
-import {FeedbackOptions} from "./Task-04/Feedback/FeedbackOptions/FeedbackOptions"
-import {Statistics} from "./Task-04/Feedback/Statistics/Statistics"
-import {Section} from "./Task-04/Feedback/Section/Section"
-import {Notification} from "./Task-04/Feedback/Notification/Notification"
+// import {FeedbackOptions} from "./Task-04/Feedback/FeedbackOptions/FeedbackOptions"
+// import {Statistics} from "./Task-04/Feedback/Statistics/Statistics"
+// import {Section} from "./Task-04/Feedback/Section/Section"
+// import {Notification} from "./Task-04/Feedback/Notification/Notification"
+
+
+// export const App = () => {
+
+
+//   const [state, setState] = useState({ good: 0, neutral: 0, bad: 0 })
+
+//   const handleClick = (type) => {
+//     setState((prevState) => ({ ...prevState, [type] : prevState[type] + 1}))
+//   }
+
+//   const countTotalFeedback = () => {
+//     const { good, neutral, bad } = state
+//     return good + neutral + bad
+//   }
+
+//   const countPositiveFeedbackPercentage = () => {
+//     const totalCount = countTotalFeedback();
+//     return totalCount > 0 ? Math.round((state.good /totalCount) * 100) : 0
+//   }
+
+    
+//     const {good, neutral, bad} = state
+
+//     return(
+//       <div className={css.box}>
+//         <Section title="Please leave feedback">
+//         <FeedbackOptions options={["good", "neutral" , "bad"]} onLeaveFeedback={handleClick} />
+//         </Section> 
+
+//         <Section title="Statistics">
+//           {countTotalFeedback() ? (
+//             <Statistics good={good} neutral={neutral} bad={bad} total={countTotalFeedback()} positivePercentage={countPositiveFeedbackPercentage()} />
+//            ) : (
+//               <Notification message="There is no feedback"/>
+//             )}
+//          </Section> 
+//       </div>
+
+//     )
+//   }
+
+
+//  TASK 04 PHONEBOOK
+
+import {ContactForm} from "./Task-04/Phonebook/ContactForm/ContactForm"
+import {Filter} from "./Task-04/Phonebook/Filter/Filter"
+import {ContactList} from "./Task-04/Phonebook/ContactList/ContactList"
+
 
 
 export const App = () => {
 
+  const STORAGE_KEY = "contacts"
 
-  const [state, setState] = useState({ good: 0, neutral: 0, bad: 0 })
+  const [contacts, setContacts] = useState([])
+  const [filter, setFilter] = useState("")
 
-  const handleClick = (type) => {
-    setState((prevState) => ({ ...prevState, [type] : prevState[type] + 1}))
+  useEffect(() => {
+    const storage = localStorage.getItem(STORAGE_KEY)
+    setContacts( JSON.parse(storage))
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts))
+  }, [contacts])
+ 
+
+  const addContact = (newContact) => {
+    setContacts([...contacts, newContact])
   }
 
-  const countTotalFeedback = () => {
-    const { good, neutral, bad } = state
-    return good + neutral + bad
+  const  filterHandler = (e) => {
+    setFilter( e.target.value)
   }
 
-  const countPositiveFeedbackPercentage = () => {
-    const totalCount = countTotalFeedback();
-    return totalCount > 0 ? Math.round((state.good /totalCount) * 100) : 0
+  const  deleteContact = (id) => {
+    const filteredContacts = contacts.filter((e) => 
+    e.id !== id)
+    setContacts(filteredContacts)
   }
 
-    
-    const {good, neutral, bad} = state
+
 
     return(
       <div className={css.box}>
-        <Section title="Please leave feedback">
-        <FeedbackOptions options={["good", "neutral" , "bad"]} onLeaveFeedback={handleClick} />
-        </Section> 
-
-        <Section title="Statistics">
-          {countTotalFeedback() ? (
-            <Statistics good={good} neutral={neutral} bad={bad} total={countTotalFeedback()} positivePercentage={countPositiveFeedbackPercentage()} />
-           ) : (
-              <Notification message="There is no feedback"/>
-            )}
-         </Section> 
+        <h1 className={css.title}>Phonebook</h1>
+        <ContactForm addContact={addContact} contacts={contacts}/>
+       
+        <h1 className={css.title}>Contacts</h1>
+        <Filter filter={filter} filterHandler={filterHandler}/>
+        <ContactList contacts={contacts} filter={filter} deleteContact={deleteContact}/>
+        
       </div>
 
-      
     )
-  }
+}
