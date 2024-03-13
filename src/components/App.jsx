@@ -1,6 +1,6 @@
-import React, { useEffect, useState} from "react";
+import React, { Component } from "react";
 
-import css from "./App.module.css"
+// import css from "./App.module.css"
 
 //TASK 01
 
@@ -157,156 +157,151 @@ import css from "./App.module.css"
 
 
 //TASK  03 IMAGE FINDER
+import { Searchbar } from "./Task-03-image-finder/Searchbar/Searchbar";
+import { ImageGallery } from "./Task-03-image-finder/ImageGallery/ImageGallery"
+import { Loader } from "./Task-03-image-finder/Loader/Loader"
+import { Button } from "./Task-03-image-finder/Button/Button"
+import { Modal } from "./Task-03-image-finder/Modal/Modal"
 
 
-// import {Searchbar} from "./Task-03-image-finder/Searchbar/Searchbar"
-// import {ImageGallery} from "./Task-03-image-finder/ImageGallery/ImageGallery"
-// import {Button} from "./Task-03-image-finder/Button/Button"
-// import {Loader} from "./Task-03-image-finder/Loader/Loader"
-// import {Modal} from "./Task-03-image-finder/Modal/Modal"
+const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4";
+export class App extends Component {
+
+  state = {
+    q : "",
+    images : [],
+    page : 1,
+    per_page : 12,
+    isLoading : false,
+    showButton : false,
+    totalHits: 0,
+    isOpenModal : false,
+    currentImage : {},
+
+  }
+
+  async componentDidMount(){
+    console.log("Robie component did mount")
+    this.setState({totalHits : 0})
+    // await this.LoadImages()
+  }
+
+  async componentDidUpdate(prevProps, prevState){
+    // console.log("Robie update")
+    const {q, page, totalHits, per_page, images} = this.state
+
+    //fetch in real life without click btn submit
+    if(prevState.q !== q){
+      await this.LoadImages()
+      this.setState((prevState) => ({...prevState, page : 1, per_page : 12}))
+    }
+    // console.log("total hits :",totalHits, "page:", page, "oraz per page: ", per_page, "images length: ", images.length)
+
+    if(q !== "" && totalHits > per_page && images.length !== 0){
+      this.setState({showButton : true})
+    } else {
+      this.setState({showButton : false})
+    }
+
+    if(prevState.page !== page){
+      await this.LoadImages()
+    }
+
+    if(images.length > 12){
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth"
+      })
+    }
+  }
+
+  LoadImages = async () => {
+
+    const {q, page, per_page} = this.state
+    this.setState({isLoading : true})
+
+    try{
+      const response = await fetch(`https://pixabay.com/api/?q=${q}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${per_page}`)
+      if(!response.ok){
+        throw new Error('Network response is failed');
+      }
+      const data = await response.json();
+         console.log(data)
+
+      this.setState((prevState) => ({...prevState, images : data.hits}))
+      this.setState((prevState) => ({...prevState, totalHits : data.totalHits}))
+      // console.log("Z SUBMITA", this.state.images)
+
+    }catch(error){
+      console.log(error)
+    }finally{
+      this.setState({isLoading : false})
+    }
+
+  }
+
+  changeHandler = (e) => {
+    this.setState((prevState) => ({...prevState, q : e.target.value}))
+  }
+
+  submitHandler = (e) => {
+    e.preventDefault();
+
+   this.LoadImages()
+
+    console.log(this.LoadImages())
+
+    this.setState({q : ""})
+  }
+
+  handleButton = () => {
+    const {page, per_page} = this.state
+    this.setState((prevState) => ({...prevState, page : page + 1}))
+    this.setState((prevState) => ({...prevState, per_page : per_page + 12}))
+    // console.log("page number :", this.state.page ,"oraz pre page:", this.state.per_page)
+  }
+
+ handleOpenModal = (imageId) => {
+  const {images} = this.state
+  const currentImage = images.find(({id}) => id === imageId)
+
+  console.log(currentImage, "currentImage: {},")
+  this.setState({ currentImage, isOpenModal: true });
+
+  window.addEventListener("keydown", ((e) => {
+    if(e.key === "Escape") {
+      this.handleCloseModal()
+    }
+  })) 
+}
+handleCloseModal = () => {
+  this.setState({ currentImage: {}, isOpenModal: false });
+}
+
+  render(){
+
+    const {q, images, isLoading, showButton, isOpenModal, currentImage} = this.state
+    const {largeImageURL, tags} = currentImage
 
 
-
-// const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4"
-
-// export class App extends Component{
-
-//   state = {
-//     images : [],
-//     inputSearch: "",
-//     page : 1,
-//     per_page : 12,
-//     totalHits: 0,
-//     isActiveButton : true,
-//     isLoadMoreButton : false,
-//     isLoading : false,
-//     isModalOpen : false,
-//     currentImage: {},
-// }
-
-
-// async componentDidMount(){
-//   console.log("Robie component did mount")
-//  await this.fetchImages()
-// }
-
-// async componentDidUpdate(prevProps, prevState){
-//   const {inputSearch, isActiveButton, images, totalHits, per_page} = this.state
-
-//   console.log("Robie component did update")
-
-
-//   if(inputSearch.length !== 0  && totalHits > per_page){
+    return(
+      <>
+       <Searchbar searchQuery={q} changeHandler={this.changeHandler} submitHandler={this.submitHandler}/>
+       {isLoading ? (
+          <Loader />) : (
+            <ImageGallery images={images} handleOpenModal={this.handleOpenModal}/>
+          )}
+          {showButton && (
+          <Button handleButton={this.handleButton}/>)}
+          {isOpenModal && (
+          <Modal largeImageURL={largeImageURL} tags={tags} closeModal={this.handleCloseModal}/>)}
    
-//       this.setState({isLoadMoreButton : true})
-    
-//   }else {
-//     this.setState({isLoadMoreButton : false})
-//   }
+       
+      </>
+    )
+  }
 
-//   if(!isActiveButton){
-//     if(inputSearch !== prevState.inputSearch && inputSearch.length > 0) {
-//       await this.fetchImages();
-//     }
-//     if(inputSearch.length === 0 && images.length > 0) {
-//       this.setState({images : []})
-//     }
-//   }
-
-//   if(prevState.per_page !== this.state.per_page) {
-//     console.log('aktualizuj mi dane i pobieraj fetcha')
-//     this.fetchImages()
-//   }
-
-// }
-
-// fetchImages = async () => {
-
-//   const {inputSearch, per_page, page} = this.state
-//   this.setState({isActiveButton : true})
-//   this.setState({isLoading : true})
-//   console.log("LIMIT W FETCHU", this.state.per_page)
-//   try{
-
-//     const response = await fetch(`https://pixabay.com/api/?key=${API_KEY}&q=${inputSearch}&image_type=photo&orientation=horizontal&per_page=${per_page}&page=${page}`)
-//     if(!response.ok){
-//       throw new Error('Network response is failed');
-//     }
-//     const data = await response.json()
-    
-//     this.setState((prevState) => ({...prevState, images:  data.hits}))
-//     this.setState({totalHits:  data.totalHits})
-   
-//   } catch(error) {
-//     console.log(error)
-
-//     return error
-//   } finally {
-//     this.setState({isActiveButton : false})
-//     this.setState({isLoading : false})
-//   }
-
-// }
-
-// loadMoreImages = () => {
-//  this.setState(prevState => ({per_page: prevState.per_page + 12 }))
-// }
-
-// changeHandler = (e) => {
-//   const {name, value} = e.target
-//   this.setState({[name] : value})
-// }
-
-// submitHandler = (e) => {
-//     e.preventDefault();
-//     this.fetchImages();
-// }
-
-// handleOpenModal = (imageId) => {
-//   const {images} = this.state
-//   const currentImage = images.find(({id}) => id === imageId)
-
-//   console.log(currentImage, "currentImage: {},")
-//   this.setState({ currentImage, isModalOpen: true });
-
-//   window.addEventListener("keydown", ((e) => {
-//     if(e.key === "Escape") {
-//       this.handleCloseModal()
-//     }
-//   })) 
-// }
-// handleCloseModal = () => {
-//   this.setState({ currentImage: {}, isModalOpened: false });
-// }
-
-//   render(){
-
-//     const {inputSearch, images, isLoadMoreButton, page, isLoading, isModalOpen, currentImage} = this.state
-//     const { largeImageURL, tags } = currentImage;
-//     return(
-//       <>
-//       <Searchbar 
-//       inputSearch={inputSearch} 
-//       changeHandler={this.changeHandler}
-//       submitHandler={this.submitHandler}
-//       />
-//       {isLoading && (
-//         <Loader />
-//       )}
-//       <ImageGallery images={images}/>
-//       {isLoadMoreButton && (
-//         <Button loadMore={this.loadMoreImages} page={page}/> 
-//       )}
-//       {isModalOpen && (
-//         <Modal             
-//         largeImageURL={largeImageURL}
-//         tags={tags}
-//         handleCLoseModal={this.handleCLoseModal}/>
-//       )}
-//       </>
-//     )
-//   }
-// }
+}
 
 //  TASK 04 FEEDBACK
 
@@ -359,55 +354,219 @@ import css from "./App.module.css"
 
 //  TASK 04 PHONEBOOK
 
-import {ContactForm} from "./Task-04/Phonebook/ContactForm/ContactForm"
-import {Filter} from "./Task-04/Phonebook/Filter/Filter"
-import {ContactList} from "./Task-04/Phonebook/ContactList/ContactList"
+// import {ContactForm} from "./Task-04/Phonebook/ContactForm/ContactForm"
+// import {Filter} from "./Task-04/Phonebook/Filter/Filter"
+// import {ContactList} from "./Task-04/Phonebook/ContactList/ContactList"
 
 
 
-export const App = () => {
+// export const App = () => {
 
-  const STORAGE_KEY = "contacts"
+//   const STORAGE_KEY = "contacts"
 
-  const [contacts, setContacts] = useState([])
-  const [filter, setFilter] = useState("")
+//   const [contacts, setContacts] = useState([])
+//   const [filter, setFilter] = useState("")
 
-  useEffect(() => {
-    const storage = localStorage.getItem(STORAGE_KEY)
-    setContacts( JSON.parse(storage))
-  }, [])
+//   useEffect(() => {
+//     const storage = localStorage.getItem(STORAGE_KEY)
+//     setContacts( JSON.parse(storage))
+//   }, [])
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts))
-  }, [contacts])
+//   useEffect(() => {
+//     localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts))
+//   }, [contacts])
  
 
-  const addContact = (newContact) => {
-    setContacts([...contacts, newContact])
-  }
+//   const addContact = (newContact) => {
+//     setContacts([...contacts, newContact])
+//   }
 
-  const  filterHandler = (e) => {
-    setFilter( e.target.value)
-  }
+//   const  filterHandler = (e) => {
+//     setFilter( e.target.value)
+//   }
 
-  const  deleteContact = (id) => {
-    const filteredContacts = contacts.filter((e) => 
-    e.id !== id)
-    setContacts(filteredContacts)
-  }
+//   const  deleteContact = (id) => {
+//     const filteredContacts = contacts.filter((e) => 
+//     e.id !== id)
+//     setContacts(filteredContacts)
+//   }
 
 
 
-    return(
-      <div className={css.box}>
-        <h1 className={css.title}>Phonebook</h1>
-        <ContactForm addContact={addContact} contacts={contacts}/>
+//     return(
+//       <div className={css.box}>
+//         <h1 className={css.title}>Phonebook</h1>
+//         <ContactForm addContact={addContact} contacts={contacts}/>
        
-        <h1 className={css.title}>Contacts</h1>
-        <Filter filter={filter} filterHandler={filterHandler}/>
-        <ContactList contacts={contacts} filter={filter} deleteContact={deleteContact}/>
+//         <h1 className={css.title}>Contacts</h1>
+//         <Filter filter={filter} filterHandler={filterHandler}/>
+//         <ContactList contacts={contacts} filter={filter} deleteContact={deleteContact}/>
         
-      </div>
+//       </div>
 
-    )
-}
+//     )
+// }
+
+
+//  TASK 04 IMAGE_FINDER BEFORE UPDATE
+
+// import { Searchbar } from "./Task-03-image-finder/Searchbar/Searchbar";
+// import { ImageGallery } from "./Task-03-image-finder/ImageGallery/ImageGallery"
+// import { Loader } from "./Task-03-image-finder/Loader/Loader"
+// import { Button } from "./Task-03-image-finder/Button/Button"
+// import { Modal } from "./Task-03-image-finder/Modal/Modal"
+
+
+// const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4";
+// export class App extends Component {
+
+//   state = {
+//     q : "",
+//     images : [],
+//     page : 1,
+//     per_page : 12,
+//     isLoading : false,
+//     showButton : false,
+//     totalHits: 0,
+//     isOpenModal : false,
+//     currentImage : {},
+
+//   }
+
+//   async componentDidMount(){
+//     console.log("Robie component did mount")
+//     this.setState({totalHits : 0})
+//     // await this.LoadImages()
+//   }
+
+//   async componentDidUpdate(prevProps, prevState){
+//     // console.log("Robie update")
+//     const {q, page, totalHits, per_page, images} = this.state
+
+//     //fetch in real life without click btn submit
+//     if(prevState.q !== q){
+//       await this.LoadImages()
+//       this.setState((prevState) => ({...prevState, page : 1, per_page : 12}))
+//     }
+//     // console.log("total hits :",totalHits, "page:", page, "oraz per page: ", per_page, "images length: ", images.length)
+
+//     if(q !== "" && totalHits > per_page && images.length !== 0){
+//       this.setState({showButton : true})
+//     } else {
+//       this.setState({showButton : false})
+//     }
+
+//     if(prevState.page !== page){
+//       await this.LoadImages()
+//     }
+
+//     if(images.length > 12){
+//       window.scrollTo({
+//         top: document.documentElement.scrollHeight,
+//         behavior: "smooth"
+//       })
+//     }
+
+
+//   }
+
+//   //make error in searchbar
+
+//   // shouldComponentUpdate(nextProps, nextState) {
+
+//   //   const oldState = this.state
+
+//   //   if(nextState.page === oldState.page && nextState.q === oldState.q){
+//   //       return false
+//   //   }
+//   //   return true
+//   // }
+
+
+//   LoadImages = async () => {
+
+//     const {q, page, per_page} = this.state
+//     this.setState({isLoading : true})
+
+//     try{
+//       const response = await fetch(`https://pixabay.com/api/?q=${q}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${per_page}`)
+//       if(!response.ok){
+//         throw new Error('Network response is failed');
+//       }
+//       const data = await response.json();
+//          console.log(data)
+
+//       this.setState((prevState) => ({...prevState, images : data.hits}))
+//       this.setState((prevState) => ({...prevState, totalHits : data.totalHits}))
+//       // console.log("Z SUBMITA", this.state.images)
+
+//     }catch(error){
+//       console.log(error)
+//     }finally{
+//       this.setState({isLoading : false})
+//     }
+
+//   }
+
+//   changeHandler = (e) => {
+//     this.setState((prevState) => ({...prevState, q : e.target.value}))
+//   }
+
+//   submitHandler = (e) => {
+//     e.preventDefault();
+
+//    this.LoadImages()
+
+//     console.log(this.LoadImages())
+
+//     this.setState({q : ""})
+//   }
+
+//   handleButton = () => {
+//     const {page, per_page} = this.state
+//     this.setState((prevState) => ({...prevState, page : page + 1}))
+//     this.setState((prevState) => ({...prevState, per_page : per_page + 12}))
+//     // console.log("page number :", this.state.page ,"oraz pre page:", this.state.per_page)
+//   }
+
+//  handleOpenModal = (imageId) => {
+//   const {images} = this.state
+//   const currentImage = images.find(({id}) => id === imageId)
+
+//   console.log(currentImage, "currentImage: {},")
+//   this.setState({ currentImage, isOpenModal: true });
+
+//   window.addEventListener("keydown", ((e) => {
+//     if(e.key === "Escape") {
+//       this.handleCloseModal()
+//     }
+//   })) 
+// }
+// handleCloseModal = () => {
+//   this.setState({ currentImage: {}, isOpenModal: false });
+// }
+
+//   render(){
+
+//     const {q, images, isLoading, showButton, isOpenModal, currentImage} = this.state
+//     const {largeImageURL, tags} = currentImage
+
+
+//     return(
+//       <>
+//        <Searchbar searchQuery={q} changeHandler={this.changeHandler} submitHandler={this.submitHandler}/>
+//        {isLoading ? (
+//           <Loader />) : (
+//             <ImageGallery images={images} handleOpenModal={this.handleOpenModal}/>
+//           )}
+//           {showButton && (
+//           <Button handleButton={this.handleButton}/>)}
+//           {isOpenModal && (
+//           <Modal largeImageURL={largeImageURL} tags={tags} closeModal={this.handleCloseModal}/>)}
+   
+       
+//       </>
+//     )
+//   }
+
+// }

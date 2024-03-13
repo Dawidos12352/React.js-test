@@ -1,14 +1,12 @@
 import css from "./Button.module.css"
 
-export const Button = ({loadMore, page}) => {
-
-    const loadOneMorePage = () => {
-
-        const updatedPage = page + 1;
-        loadMore(updatedPage)
-    }
+export const Button = ({handleButton}) => {
 
     return(
-        <button type="button"  className={css.Button} onClick={loadOneMorePage}>Load more...</button>
+        <button 
+        type="button" 
+        onClick={() => handleButton()}
+        className={css.Button}
+        >Load more...</button>
     )
 }

@@ -2,36 +2,34 @@ import React, {Component} from "react";
 import css from "./Searchbar.module.css"
 
 
-export class Searchbar extends Component{
-
-  
-
+export class Searchbar extends Component {
 
 
     render(){
 
-        const {inputSearch, changeHandler, submitHandler} = this.props
+        const {changeHandler, submitHandler, searchQuery} = this.props
 
         return(
-            <header className={css.Searchbar}>
-            <form className={css.SearchForm} onSubmit={submitHandler}>
-              <button type="submit" className={css.SearchFormButton}>
-              🔍
-              </button>
 
+            <header className={css.Searchbar}>
+                <form className={css.SearchForm} onSubmit={submitHandler} >
+                    <button type="submit" className={css.SearchFormButton}>
+                        Search
+                    </button>
+        
                     <input
-                    className={css.SearchFormInput}
-                    name="inputSearch"
-                    type="text"
-                    autoComplete="off"
-                    autoFocus
-                    placeholder="Search images and photos"
-                    value ={inputSearch}
-                    onChange={changeHandler}
+                        className={css.SearchFormInput}
+                        type="text"
+                        autoComplete="off"
+                        autoFocus
+                        placeholder="Search images and photos"
+                        name="searchbar"
+                        value={searchQuery}
+                        onChange={changeHandler}
                     />
                 </form>
             </header>
         )
     }
-
 }
+
