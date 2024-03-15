@@ -18,3 +18,7 @@
 .title {
   font-size: 60px;
 }
+main {
+  padding: 25px 25px;
+  max-width: 1920px;
+}

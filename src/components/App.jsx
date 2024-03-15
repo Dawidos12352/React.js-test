@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+// import React, { lazy } from "react";
+
 
 // import css from "./App.module.css"
 
@@ -157,151 +158,153 @@ import React, { Component } from "react";
 
 
 //TASK  03 IMAGE FINDER
-import { Searchbar } from "./Task-03-image-finder/Searchbar/Searchbar";
-import { ImageGallery } from "./Task-03-image-finder/ImageGallery/ImageGallery"
-import { Loader } from "./Task-03-image-finder/Loader/Loader"
-import { Button } from "./Task-03-image-finder/Button/Button"
-import { Modal } from "./Task-03-image-finder/Modal/Modal"
 
 
-const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4";
-export class App extends Component {
-
-  state = {
-    q : "",
-    images : [],
-    page : 1,
-    per_page : 12,
-    isLoading : false,
-    showButton : false,
-    totalHits: 0,
-    isOpenModal : false,
-    currentImage : {},
-
-  }
-
-  async componentDidMount(){
-    console.log("Robie component did mount")
-    this.setState({totalHits : 0})
-    // await this.LoadImages()
-  }
-
-  async componentDidUpdate(prevProps, prevState){
-    // console.log("Robie update")
-    const {q, page, totalHits, per_page, images} = this.state
-
-    //fetch in real life without click btn submit
-    if(prevState.q !== q){
-      await this.LoadImages()
-      this.setState((prevState) => ({...prevState, page : 1, per_page : 12}))
-    }
-    // console.log("total hits :",totalHits, "page:", page, "oraz per page: ", per_page, "images length: ", images.length)
-
-    if(q !== "" && totalHits > per_page && images.length !== 0){
-      this.setState({showButton : true})
-    } else {
-      this.setState({showButton : false})
-    }
-
-    if(prevState.page !== page){
-      await this.LoadImages()
-    }
-
-    if(images.length > 12){
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth"
-      })
-    }
-  }
-
-  LoadImages = async () => {
-
-    const {q, page, per_page} = this.state
-    this.setState({isLoading : true})
-
-    try{
-      const response = await fetch(`https://pixabay.com/api/?q=${q}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${per_page}`)
-      if(!response.ok){
-        throw new Error('Network response is failed');
-      }
-      const data = await response.json();
-         console.log(data)
-
-      this.setState((prevState) => ({...prevState, images : data.hits}))
-      this.setState((prevState) => ({...prevState, totalHits : data.totalHits}))
-      // console.log("Z SUBMITA", this.state.images)
-
-    }catch(error){
-      console.log(error)
-    }finally{
-      this.setState({isLoading : false})
-    }
-
-  }
-
-  changeHandler = (e) => {
-    this.setState((prevState) => ({...prevState, q : e.target.value}))
-  }
-
-  submitHandler = (e) => {
-    e.preventDefault();
-
-   this.LoadImages()
-
-    console.log(this.LoadImages())
-
-    this.setState({q : ""})
-  }
-
-  handleButton = () => {
-    const {page, per_page} = this.state
-    this.setState((prevState) => ({...prevState, page : page + 1}))
-    this.setState((prevState) => ({...prevState, per_page : per_page + 12}))
-    // console.log("page number :", this.state.page ,"oraz pre page:", this.state.per_page)
-  }
-
- handleOpenModal = (imageId) => {
-  const {images} = this.state
-  const currentImage = images.find(({id}) => id === imageId)
-
-  console.log(currentImage, "currentImage: {},")
-  this.setState({ currentImage, isOpenModal: true });
-
-  window.addEventListener("keydown", ((e) => {
-    if(e.key === "Escape") {
-      this.handleCloseModal()
-    }
-  })) 
-}
-handleCloseModal = () => {
-  this.setState({ currentImage: {}, isOpenModal: false });
-}
-
-  render(){
-
-    const {q, images, isLoading, showButton, isOpenModal, currentImage} = this.state
-    const {largeImageURL, tags} = currentImage
+// import { Searchbar } from "./Task-03-image-finder/Searchbar/Searchbar";
+// import { ImageGallery } from "./Task-03-image-finder/ImageGallery/ImageGallery"
+// import { Loader } from "./Task-03-image-finder/Loader/Loader"
+// import { Button } from "./Task-03-image-finder/Button/Button"
+// import { Modal } from "./Task-03-image-finder/Modal/Modal"
 
 
-    return(
-      <>
-       <Searchbar searchQuery={q} changeHandler={this.changeHandler} submitHandler={this.submitHandler}/>
-       {isLoading ? (
-          <Loader />) : (
-            <ImageGallery images={images} handleOpenModal={this.handleOpenModal}/>
-          )}
-          {showButton && (
-          <Button handleButton={this.handleButton}/>)}
-          {isOpenModal && (
-          <Modal largeImageURL={largeImageURL} tags={tags} closeModal={this.handleCloseModal}/>)}
+// const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4";
+// export class App extends Component {
+
+//   state = {
+//     q : "",
+//     images : [],
+//     page : 1,
+//     per_page : 12,
+//     isLoading : false,
+//     showButton : false,
+//     totalHits: 0,
+//     isOpenModal : false,
+//     currentImage : {},
+
+//   }
+
+//   async componentDidMount(){
+//     console.log("Robie component did mount")
+//     this.setState({totalHits : 0})
+//     // await this.LoadImages()
+//   }
+
+//   async componentDidUpdate(prevProps, prevState){
+//     // console.log("Robie update")
+//     const {q, page, totalHits, per_page, images} = this.state
+
+//     //fetch in real life without click btn submit
+//     if(prevState.q !== q){
+//       await this.LoadImages()
+//       this.setState((prevState) => ({...prevState, page : 1, per_page : 12}))
+//     }
+//     // console.log("total hits :",totalHits, "page:", page, "oraz per page: ", per_page, "images length: ", images.length)
+
+//     if(q !== "" && totalHits > per_page && images.length !== 0){
+//       this.setState({showButton : true})
+//     } else {
+//       this.setState({showButton : false})
+//     }
+
+//     if(prevState.page !== page){
+//       await this.LoadImages()
+//     }
+
+//     if(images.length > 12){
+//       window.scrollTo({
+//         top: document.documentElement.scrollHeight,
+//         behavior: "smooth"
+//       })
+//     }
+//   }
+
+//   LoadImages = async () => {
+
+//     const {q, page, per_page} = this.state
+//     this.setState({isLoading : true})
+
+//     try{
+//       const response = await fetch(`https://pixabay.com/api/?q=${q}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${per_page}`)
+//       if(!response.ok){
+//         throw new Error('Network response is failed');
+//       }
+//       const data = await response.json();
+//          console.log(data)
+
+//       this.setState((prevState) => ({...prevState, images : data.hits}))
+//       this.setState((prevState) => ({...prevState, totalHits : data.totalHits}))
+//       // console.log("Z SUBMITA", this.state.images)
+
+//     }catch(error){
+//       console.log(error)
+//     }finally{
+//       this.setState({isLoading : false})
+//     }
+
+//   }
+
+//   changeHandler = (e) => {
+//     this.setState((prevState) => ({...prevState, q : e.target.value}))
+//   }
+
+//   submitHandler = (e) => {
+//     e.preventDefault();
+
+//    this.LoadImages()
+
+//     console.log(this.LoadImages())
+
+//     this.setState({q : ""})
+//   }
+
+//   handleButton = () => {
+//     const {page, per_page} = this.state
+//     this.setState((prevState) => ({...prevState, page : page + 1}))
+//     this.setState((prevState) => ({...prevState, per_page : per_page + 12}))
+//     // console.log("page number :", this.state.page ,"oraz pre page:", this.state.per_page)
+//   }
+
+//  handleOpenModal = (imageId) => {
+//   const {images} = this.state
+//   const currentImage = images.find(({id}) => id === imageId)
+
+//   console.log(currentImage, "currentImage: {},")
+//   this.setState({ currentImage, isOpenModal: true });
+
+//   window.addEventListener("keydown", ((e) => {
+//     if(e.key === "Escape") {
+//       this.handleCloseModal()
+//     }
+//   })) 
+// }
+// handleCloseModal = () => {
+//   this.setState({ currentImage: {}, isOpenModal: false });
+// }
+
+//   render(){
+
+//     const {q, images, isLoading, showButton, isOpenModal, currentImage} = this.state
+//     const {largeImageURL, tags} = currentImage
+
+
+//     return(
+//       <>
+//        <Searchbar searchQuery={q} changeHandler={this.changeHandler} submitHandler={this.submitHandler}/>
+//        {isLoading ? (
+//           <Loader />) : (
+//             <ImageGallery images={images} handleOpenModal={this.handleOpenModal}/>
+//           )}
+//           {showButton && (
+//           <Button handleButton={this.handleButton}/>)}
+//           {isOpenModal && (
+//           <Modal largeImageURL={largeImageURL} tags={tags} closeModal={this.handleCloseModal}/>)}
    
        
-      </>
-    )
-  }
+//       </>
+//     )
+//   }
 
-}
+// }
 
 //  TASK 04 FEEDBACK
 
@@ -410,163 +413,242 @@ handleCloseModal = () => {
 
 //  TASK 04 IMAGE_FINDER BEFORE UPDATE
 
-// import { Searchbar } from "./Task-03-image-finder/Searchbar/Searchbar";
-// import { ImageGallery } from "./Task-03-image-finder/ImageGallery/ImageGallery"
-// import { Loader } from "./Task-03-image-finder/Loader/Loader"
-// import { Button } from "./Task-03-image-finder/Button/Button"
-// import { Modal } from "./Task-03-image-finder/Modal/Modal"
+// import { Searchbar } from "./Task-04/Image-finder/Searchbar/Searchbar";
+// import { ImageGallery } from "./Task-04/Image-finder/ImageGallery/ImageGallery"
+// import { Loader } from "./Task-04/Image-finder/Loader/Loader"
+// import { Button } from "./Task-04/Image-finder/Button/Button"
+// import { Modal } from "./Task-04/Image-finder/Modal/Modal"
 
 
 // const API_KEY = "35988919-7ec9329d85026b7b4e8ec28c4";
-// export class App extends Component {
-
-//   state = {
-//     q : "",
-//     images : [],
-//     page : 1,
-//     per_page : 12,
-//     isLoading : false,
-//     showButton : false,
-//     totalHits: 0,
-//     isOpenModal : false,
-//     currentImage : {},
-
-//   }
-
-//   async componentDidMount(){
-//     console.log("Robie component did mount")
-//     this.setState({totalHits : 0})
-//     // await this.LoadImages()
-//   }
-
-//   async componentDidUpdate(prevProps, prevState){
-//     // console.log("Robie update")
-//     const {q, page, totalHits, per_page, images} = this.state
-
-//     //fetch in real life without click btn submit
-//     if(prevState.q !== q){
-//       await this.LoadImages()
-//       this.setState((prevState) => ({...prevState, page : 1, per_page : 12}))
-//     }
-//     // console.log("total hits :",totalHits, "page:", page, "oraz per page: ", per_page, "images length: ", images.length)
-
-//     if(q !== "" && totalHits > per_page && images.length !== 0){
-//       this.setState({showButton : true})
-//     } else {
-//       this.setState({showButton : false})
-//     }
-
-//     if(prevState.page !== page){
-//       await this.LoadImages()
-//     }
-
-//     if(images.length > 12){
-//       window.scrollTo({
-//         top: document.documentElement.scrollHeight,
-//         behavior: "smooth"
-//       })
-//     }
+// export const App = () => {
 
 
-//   }
+//   const [query, setQuery] = useState("")
+//   const [images, setImages] = useState([])
+//   const [page, setPage] = useState(1)
+//   const [perPage, setPerPage] = useState(12)
+//   const [isLoading, setIsLoading] = useState(false)
+//   const [showButton, setShowButton] = useState(true)
+//   const [totalHits, setTotalHits] = useState(0)
+//   const [isOpenModal, setIsOpenModal] = useState(false)
+//   const [currentImage, setCurrentImage] = useState({})
 
-//   //make error in searchbar
+ 
 
-//   // shouldComponentUpdate(nextProps, nextState) {
+// useEffect(() => {
+//   console.log("Robie component did mount")
+//   setTotalHits(0)
+// }, [])
 
-//   //   const oldState = this.state
+// const prevQueryRef = useRef()
+// const prevPageRef = useRef()
 
-//   //   if(nextState.page === oldState.page && nextState.q === oldState.q){
-//   //       return false
-//   //   }
-//   //   return true
-//   // }
+// useEffect(() => {
+//  prevQueryRef.current = query
+//  prevPageRef.current = page
+// },[query, page])
 
+// useEffect(() => {
 
-//   LoadImages = async () => {
+//   const LoadImages = async () => {
 
-//     const {q, page, per_page} = this.state
-//     this.setState({isLoading : true})
+//     setIsLoading(true)
 
 //     try{
-//       const response = await fetch(`https://pixabay.com/api/?q=${q}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${per_page}`)
+//       const response = await fetch(`https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`)
 //       if(!response.ok){
 //         throw new Error('Network response is failed');
 //       }
 //       const data = await response.json();
-//          console.log(data)
+//          console.log("POKAZ DATA:", data)
 
-//       this.setState((prevState) => ({...prevState, images : data.hits}))
-//       this.setState((prevState) => ({...prevState, totalHits : data.totalHits}))
-//       // console.log("Z SUBMITA", this.state.images)
+//       setImages(data.hits)
+//       setTotalHits(0)
 
 //     }catch(error){
 //       console.log(error)
 //     }finally{
-//       this.setState({isLoading : false})
+//       setIsLoading(false)
 //     }
-
 //   }
 
-//   changeHandler = (e) => {
-//     this.setState((prevState) => ({...prevState, q : e.target.value}))
+//   console.log("Robie update")
+//   const prevQuery = prevQueryRef.current
+//   const prevPage = prevPageRef.current
+
+//   if(prevQuery !== query){
+//     LoadImages()
+//     setPage(1)
+//     setPerPage(12)
 //   }
 
-//   submitHandler = (e) => {
+//   if(query !== "" && totalHits > perPage && images.length !== 0){
+//     setShowButton(true)
+//   }
+//   // } else{
+//   //   setShowButton(false)
+//   // }
+
+//   if(prevPage !== page){
+//     LoadImages()
+//   }
+
+//   if(images.length > 12){
+//         window.scrollTo({
+//           top: document.documentElement.scrollHeight,
+//           behavior: "smooth"
+//         })
+//       }
+
+
+// }, [ query, page, totalHits, perPage, images])
+
+//   const fetchImages = async () => {
+
+//     setIsLoading(true)
+
+//     try{
+//       const response = await fetch(`https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`)
+//       if(!response.ok){
+//         throw new Error('Network response is failed');
+//       }
+//       const data = await response.json();
+//          console.log("POKAZ DATA:", data)
+
+//       setImages(data.hits)
+//       setTotalHits(0)
+
+//     }catch(error){
+//       console.log(error)
+//     }finally{
+//       setIsLoading(false)
+//     }
+//   }
+
+//   const changeHandler = (e) => {
+//     setQuery(e.target.value)
+//   }
+
+//   const submitHandler = (e) => {
 //     e.preventDefault();
-
-//    this.LoadImages()
-
-//     console.log(this.LoadImages())
-
-//     this.setState({q : ""})
+//     setQuery("")
 //   }
 
-//   handleButton = () => {
-//     const {page, per_page} = this.state
-//     this.setState((prevState) => ({...prevState, page : page + 1}))
-//     this.setState((prevState) => ({...prevState, per_page : per_page + 12}))
-//     // console.log("page number :", this.state.page ,"oraz pre page:", this.state.per_page)
+//   const handleButton = () => {
+//     setPage(page + 1)
+//     setPerPage( perPage + 12)
+//     console.log("page number :", page ,"oraz pre page:", perPage)
 //   }
 
-//  handleOpenModal = (imageId) => {
-//   const {images} = this.state
+//  const handleOpenModal = (imageId) => {
 //   const currentImage = images.find(({id}) => id === imageId)
 
 //   console.log(currentImage, "currentImage: {},")
-//   this.setState({ currentImage, isOpenModal: true });
+ 
+//   setCurrentImage(currentImage)
+//   setIsOpenModal(true)
 
 //   window.addEventListener("keydown", ((e) => {
 //     if(e.key === "Escape") {
-//       this.handleCloseModal()
+//       handleCloseModal()
 //     }
 //   })) 
 // }
-// handleCloseModal = () => {
-//   this.setState({ currentImage: {}, isOpenModal: false });
+// const handleCloseModal = () => {
+//   setCurrentImage({})
+//   setIsOpenModal(false)
 // }
+// console.log(images)
+// console.log("SHOW BUTTON:", showButton)
 
-//   render(){
-
-//     const {q, images, isLoading, showButton, isOpenModal, currentImage} = this.state
 //     const {largeImageURL, tags} = currentImage
 
 
 //     return(
 //       <>
-//        <Searchbar searchQuery={q} changeHandler={this.changeHandler} submitHandler={this.submitHandler}/>
+//         <Searchbar searchQuery={query} changeHandler={changeHandler} submitHandler={submitHandler}/>
 //        {isLoading ? (
 //           <Loader />) : (
-//             <ImageGallery images={images} handleOpenModal={this.handleOpenModal}/>
+//             <ImageGallery images={images} handleOpenModal={handleOpenModal}/>
 //           )}
 //           {showButton && (
-//           <Button handleButton={this.handleButton}/>)}
+//           <Button handleButton={handleButton}/>)}
 //           {isOpenModal && (
-//           <Modal largeImageURL={largeImageURL} tags={tags} closeModal={this.handleCloseModal}/>)}
-   
-       
+//           <Modal largeImageURL={largeImageURL} tags={tags} closeModal={handleCloseModal}/>)} 
 //       </>
 //     )
-//   }
+//  }
 
-// }
+// IMAGE FINDER AFTER UPDATE
+
+// import { Searchbar } from "./Task-04/Image-finder/Searchbar/Searchbar";
+// import { ImageGallery } from "./Task-04/Image-finder/ImageGallery/ImageGallery"
+// import { Modal } from "./Task-04/Image-finder/Modal/Modal"
+
+
+
+// export const App = () => {
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [pageNumber, setPageNumber] = useState(1);
+//   const [largePicture, setLargePicture] = useState(null);
+
+//   const updateSearchQuery = newSearchQuery => {
+//     if (searchQuery !== newSearchQuery) {
+//       setSearchQuery(newSearchQuery);
+//       setPageNumber(1);
+//     }
+//   };
+
+//   const loadNextPage = () => {
+//     setPageNumber(prevPageNumber => prevPageNumber + 1);
+//   };
+
+//   const hideModal = () => {
+//     setLargePicture(null);
+//   };
+
+//   return (
+//     <>
+//       <Searchbar handleSubmit={updateSearchQuery} />
+//       <ImageGallery
+//         searchQuery={searchQuery}
+//         currentPage={pageNumber}
+//         showNextPage={loadNextPage}
+//         showLargePicture={setLargePicture}
+//       />
+//       {largePicture !== null && (
+//         <Modal picture={largePicture} hideModal={hideModal} />
+//       )}
+//     </>
+//   );
+// };
+
+// TASK 05 MOVIES
+
+import { Route, Routes } from "react-router-dom";
+import React, { lazy } from "react";
+import { Navigation } from "./Task-05-movies/components/Navigation/Navigation";
+import { Cast } from "./Task-05-movies/components/Cast/Cast";
+
+const Home = lazy(() => import('./Task-05-movies/pages/Home'))
+const Movies = lazy(() => import('./Task-05-movies/pages/Movies'))
+const MovieInfo = lazy(() => import('./Task-05-movies/pages/MovieInfo'))
+
+
+
+export const App = () => {
+  return(
+    <div>
+      <Routes>
+        <Route path="/" element={<Navigation/>} >
+          <Route index element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/movies/:movieId" element={<MovieInfo />}>
+            <Route path="/movies/:movieId/cast" element={<Cast />} />
+          </Route>
+        </Route>
+      </Routes>
+    </div>
+  )
+}

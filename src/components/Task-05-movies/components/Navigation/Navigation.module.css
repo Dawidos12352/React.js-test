@@ -1,0 +1,23 @@
+.container {
+  max-width: 1920px;
+  width: 100%;
+}
+.header {
+  width: 100%;
+  max-width: 1870px;
+  padding: 25px 25px;
+  border-bottom: 2px solid black;
+}
+.navLink {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  margin-right: 30px;
+}
+
+.navLink:focus,
+.navLink:hover,
+.navLink:active {
+  color: red;
+}

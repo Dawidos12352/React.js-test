@@ -1,0 +1,15 @@
+.listItem {
+  padding: 5px 0;
+}
+
+.listLink {
+  padding: 3px 4px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+.listLink:focus,
+.listLink:hover {
+  border: 1px solid black;
+  color: red;
+}
